@@ -41,6 +41,15 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end
 
+# Flexible authentication solution for Rails with Warden.
+gem 'devise', '~> 4.2'
+
+# A lightning fast JSON:API serializer for Ruby Objects
+gem 'fast_jsonapi', '~> 1.1', '>= 1.1.1'
+
+# PgSearch builds Active Record named scopes that take advantage of PostgreSQL's full text search
+gem 'pg_search', '~> 1.0', '>= 1.0.5'
+
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
   gem 'web-console', '>= 3.3.0'
