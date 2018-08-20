@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_20_211503) do
+ActiveRecord::Schema.define(version: 2018_08_20_212603) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
@@ -33,6 +33,22 @@ ActiveRecord::Schema.define(version: 2018_08_20_211503) do
     t.index ["user_id"], name: "index_favorites_on_user_id"
   end
 
+  create_table "movies", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.string "thumbnail_key"
+    t.integer "episode_number"
+    t.string "featured_thumbnail_key"
+    t.bigint "serie_id"
+    t.bigint "category_id"
+    t.string "thumbnail_cover_key"
+    t.boolean "highlighted", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_movies_on_category_id"
+    t.index ["serie_id"], name: "index_movies_on_serie_id"
+  end
+
   create_table "pg_search_documents", force: :cascade do |t|
     t.text "content"
     t.string "searchable_type"
@@ -40,6 +56,18 @@ ActiveRecord::Schema.define(version: 2018_08_20_211503) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable_type_and_searchable_id"
+  end
+
+  create_table "players", force: :cascade do |t|
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.time "elapsed_time"
+    t.bigint "movie_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["movie_id"], name: "index_players_on_movie_id"
+    t.index ["user_id"], name: "index_players_on_user_id"
   end
 
   create_table "reviews", force: :cascade do |t|
@@ -52,6 +80,21 @@ ActiveRecord::Schema.define(version: 2018_08_20_211503) do
     t.datetime "updated_at", null: false
     t.index ["reviewable_type", "reviewable_id"], name: "index_reviews_on_reviewable_type_and_reviewable_id"
     t.index ["user_id"], name: "index_reviews_on_user_id"
+  end
+
+  create_table "series", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.string "thumbnail_key"
+    t.bigint "category_id"
+    t.string "featured_thumbnail_key"
+    t.string "thumbnail_cover_key"
+    t.boolean "highlighted", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "last_watched_episode_id"
+    t.index ["category_id"], name: "index_series_on_category_id"
+    t.index ["last_watched_episode_id"], name: "index_series_on_last_watched_episode_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -73,5 +116,11 @@ ActiveRecord::Schema.define(version: 2018_08_20_211503) do
   end
 
   add_foreign_key "favorites", "users"
+  add_foreign_key "movies", "categories"
+  add_foreign_key "movies", "series", column: "serie_id"
+  add_foreign_key "players", "movies"
+  add_foreign_key "players", "users"
   add_foreign_key "reviews", "users"
+  add_foreign_key "series", "categories"
+  add_foreign_key "series", "movies", column: "last_watched_episode_id"
 end
